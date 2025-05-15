@@ -27,8 +27,8 @@ fn test_summary() -> anyhow::Result<()> {
         vocab_resource,
         None,
     );
-    let summarization_model = SummarizationModel::new(summarization_config)?;
     println!("Model loaded in {:?}", summarization_config.device);
+    let summarization_model = SummarizationModel::new(summarization_config)?;
 
     let input = ["In findings published Tuesday in Cornell University's arXiv by a team of scientists \
 from the University of Montreal and a separate report published Wednesday in Nature Astronomy by a team \
