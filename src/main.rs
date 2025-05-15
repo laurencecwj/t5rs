@@ -71,7 +71,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     use std::path::Path;
     use rust_bert::pipelines::text_generation::{TextGenerationConfig, TextGenerationModel};
     use std::path::PathBuf;
-    use rust_bert::pipelines::common::ModelType;
+    use rust_bert::pipelines::common::{ModelType, TokenizerOption};
 
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
@@ -85,14 +85,12 @@ fn test_t5_generation() -> anyhow::Result<()> {
     // // Load weights (assuming you have model weights in the directory)
     // vs.load(PathBuf::from(format!("{base_dir}/model.ot")))?;
     
-    let tokenizer = rust_bert::pipelines::common::TokenizerOption::from_file(
-        ModelType::T5,
-        PathBuf::from(format!("{base_dir}/tokenizer.json")).to_str().unwrap(),
-        None,
-        false,
-        None,
-        None,
-    )?;
+    let config = T5Config::from_file(&config_path);
+
+    // let tokenizer = TokenizerOption::from_hf_tokenizer_file(
+    //     PathBuf::from(format!("{base_dir}/tokenizer.json")),
+    //     None,
+    // )?;
 
     // Input text
     let input_text = "translate English to German: The house is wonderful.";
@@ -110,7 +108,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         ..Default::default()
     };
     
-    let pipeline = TextGenerationModel::new_with_tokenizer(generate_config, tokenizer)?;
+    let pipeline = TextGenerationModel::new(generate_config)?;
     
     let ts = std::time::Instant::now();
     // Generate output
