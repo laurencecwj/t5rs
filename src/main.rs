@@ -113,9 +113,9 @@ fn test_t5_generation() -> anyhow::Result<()> {
     // Create generator
     let generate_config = TextGenerationConfig {
         model_type: ModelType::T5,
-        config_resource: Box::new(config_resource),
+        // config_resource: Box::new(config_resource),
         model_resource: ModelResource::Torch(model_resource),
-        vocab_resource: Box::new(sentence_piece_resource),
+        // vocab_resource: Box::new(sentence_piece_resource),
         max_length: Some(100),
         do_sample: false,
         num_beams: 5,
