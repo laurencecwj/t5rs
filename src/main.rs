@@ -28,7 +28,7 @@ fn test_summary() -> anyhow::Result<()> {
         None,
     );
     let summarization_model = SummarizationModel::new(summarization_config)?;
-    println!("Model loaded in {:?}", summarization_model.get_device());
+    println!("Model loaded in {:?}", summarization_config.device);
 
     let input = ["In findings published Tuesday in Cornell University's arXiv by a team of scientists \
 from the University of Montreal and a separate report published Wednesday in Nature Astronomy by a team \
