@@ -94,9 +94,9 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let config_resource = Box::new(RemoteResource::from_pretrained(
         rust_bert::t5::T5ConfigResources::T5_BASE,
     ));    
-    let model_resource = Box::new(LocalResource::from(PathBuf::from(
+    let model_resource = Box::new(RemoteResource::from_pretrained(
         rust_bert::t5::T5ModelResources::T5_BASE,
-    )));
+    ));
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
     // let weights_path = weights_resource.get_local_path()?;
