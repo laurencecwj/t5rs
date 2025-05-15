@@ -6,4 +6,3 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 rust-bert = "0.23.0"
-torch-sys = "0.20.0"
