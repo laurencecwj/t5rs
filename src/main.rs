@@ -16,6 +16,7 @@ use rust_bert::resources::RemoteResource;
 use rust_bert::t5::{T5ConfigResources, T5ModelResources, T5VocabResources};
 
 fn test_summary() -> anyhow::Result<()> {
+    let device = Device::cuda_if_available();
     let config_resource = RemoteResource::from_pretrained(T5ConfigResources::T5_SMALL);
     let vocab_resource = RemoteResource::from_pretrained(T5VocabResources::T5_SMALL);
     let weights_resource = RemoteResource::from_pretrained(T5ModelResources::T5_SMALL);
@@ -28,6 +29,7 @@ fn test_summary() -> anyhow::Result<()> {
         None,
     );
     let summarization_model = SummarizationModel::new(summarization_config)?;
+    println!("Model loaded in {:?}", summarization_model.get_device());
 
     let input = ["In findings published Tuesday in Cornell University's arXiv by a team of scientists \
 from the University of Montreal and a separate report published Wednesday in Nature Astronomy by a team \
