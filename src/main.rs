@@ -86,7 +86,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         local_path: PathBuf::from(format!("{base_dir}/spiece.model")),
     };
     let weights_resource = LocalResource {
-        local_path: PathBuf::from(format!("{base_dir}/model.ot")),
+        local_path: PathBuf::from(format!("{base_dir}/rust_model.ot")),
     };
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
