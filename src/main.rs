@@ -89,7 +89,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         format!("{base_dir}/rust_model.ot")),
     ));
     let vocab_resource = Box::new(RemoteResource::from_pretrained(
-        format!("{base_dir}/spiece.model"),
+        rust_bert::t5::T5VocabResources::T5_BASE,
     ));
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
