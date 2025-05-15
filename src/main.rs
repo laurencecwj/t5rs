@@ -15,7 +15,7 @@ use rust_bert::pipelines::summarization::{SummarizationConfig, SummarizationMode
 use rust_bert::resources::RemoteResource;
 use rust_bert::t5::{T5ConfigResources, T5ModelResources, T5VocabResources};
 
-fn main() -> anyhow::Result<()> {
+fn test_summary() -> anyhow::Result<()> {
     let config_resource = RemoteResource::from_pretrained(T5ConfigResources::T5_SMALL);
     let vocab_resource = RemoteResource::from_pretrained(T5VocabResources::T5_SMALL);
     let weights_resource = RemoteResource::from_pretrained(T5ModelResources::T5_SMALL);
@@ -57,5 +57,12 @@ about exoplanets like K2-18b."];
         println!("{sentence}");
     }
 
+    Ok(())
+}
+
+fn main() -> anyhow::Result<()> {
+    let ts = std::time::Instant::now();
+    test_summary()?;
+    println!("Time: {:?}", ts.elapsed());
     Ok(())
 }
