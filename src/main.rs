@@ -73,22 +73,45 @@ fn test_t5_generation() -> anyhow::Result<()> {
 
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
-    let device = Device::Cpu;
-    let p = nn::VarStore::new(device);
+        
+    // Load model
+    let mut vs = nn::VarStore::new(device);
     let config = T5Config::from_file(&config_path);
-    let t5 = T5ForConditionalGeneration::new(&p.root() / "t5", &config);
-    // Create translation model with proper resource paths
-    let model = TranslationModelBuilder::new()
-        .with_device(device)
-        .with_model_type(ModelType::T5)
-        .with_model(t5)
-        .with_tokenizer(PathBuf::from(format!("{base_dir}/tokenizer.json")))
-        .with_tokenizer_config(PathBuf::from(format!("{base_dir}/tokenizer_config.json")))
-        .create_model()?;
-    // Perform translation
+    let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
+    
+    // Load weights (assuming you have model weights in the directory)
+    vs.load(PathBuf::from(format!("{base_dir}/model.ot")))?;
+    
+    // Input text
     let input_text = "translate English to German: The house is wonderful.";
-    let output = model.translate(&[input_text], Language::English, Language::German)?;
-    println!("Translation: {}", output[0]);
+    
+    // Tokenize input
+    let tokenizer = rust_bert::pipelines::common::TokenizerOption::from_file(
+        PathBuf::from(format!("{base_dir}/tokenizer.json")),
+        PathBuf::from(format!("{base_dir}/tokenizer_config.json")),
+        None,
+        false,
+        None,
+        None,
+    )?;
+    
+    let input = tokenizer.encode(input_text, true);
+    
+    let ts = std::time::Instant::now();
+    // Generate output
+    let output = t5_model.generate(
+        &[input],
+        Some(GenerateOptions {
+            max_length: Some(50),
+            ..Default::default()
+        }),
+    )?;
+    println!("generate time: {:?}", ts.elapsed());
+    
+    // Decode output
+    let translation = tokenizer.decode(&output[0], true, true)?;
+    
+    println!("Translation: {}", translation);
     Ok(())
 }
 
