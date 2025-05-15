@@ -55,13 +55,51 @@ about exoplanets like K2-18b."];
     let ts = std::time::Instant::now();
     //    Credits: WikiNews, CC BY 2.5 license (https://en.wikinews.org/wiki/Astronomers_find_water_vapour_in_atmosphere_of_exoplanet_K2-18b)
     let _output = summarization_model.summarize(&input)?;
-    println!("Time: {:?}", ts.elapsed());
+    println!("summarize time: {:?}", ts.elapsed());
     for sentence in _output {
         println!("{sentence}");
     }
 
     Ok(())
 }
+
+fn test_t5_generation() -> anyhow::Result<()> {
+    use tch::{nn, Device};
+    use rust_bert::resources::{LocalResource, ResourceProvider};
+    use rust_bert::Config;
+    use rust_tokenizers::tokenizer::T5Tokenizer;
+    use rust_bert::t5::{T5Config, T5ForConditionalGeneration};
+    use std::path::Path;
+
+    let base_dir = "./t5-base";
+
+    let config_path = Path::new(format!("{base_dir}/config.json").as_str());
+    let device = Device::cuda_if_available();
+    let p = nn::VarStore::new(device);
+    let config = T5Config::from_file(config_path);
+    let t5 = T5ForConditionalGeneration::new(&base_dir, &config);
+
+    let mut tokenizer = T5Tokenizer::from_pretrained(
+        LocalResource::from(Path::new(format!("{base_dir}/tokenizer.json").as_str())),
+        LocalResource::from(Path::new(format!("{base_dir}/tokenizer_config.json").as_str())),
+        false,
+    )?;
+
+    let model = TranslationModelBuilder::new()
+        .with_device(device)
+        .with_model_type(ModelType::T5)
+        .with_model(t5)
+        .create_model()?;
+    // Perform translation
+    let input_text = "translate English to German: The house is wonderful.";
+    let ts = std::time::Instant::now();
+    let output = model.translate(&[input_text], Language::English, Language::German)?;
+    println!("generation time: {:?}", ts.elapsed());
+    println!("Translation: {}", output[0]);
+
+    Ok(())
+}
+
 
 fn main() -> anyhow::Result<()> {
     test_summary()?;
