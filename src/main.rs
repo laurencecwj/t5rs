@@ -88,6 +88,9 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let model_resource = Box::new(LocalResource::from(PathBuf::from(
         format!("{base_dir}/rust_model.ot")),
     ));
+    let vocab_resource = Box::new(RemoteResource::from_pretrained(
+        format!("{base_dir}/spiece.model"),
+    ));
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
     // let weights_path = weights_resource.get_local_path()?;
@@ -115,7 +118,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         model_type: ModelType::T5,
         // config_resource: Box::new(config_resource),
         model_resource: ModelResource::Torch(model_resource),
-        // vocab_resource: Box::new(sentence_piece_resource),
+        vocab_resource: Box::new(vocab_resource),
         max_length: Some(100),
         do_sample: false,
         num_beams: 5,
