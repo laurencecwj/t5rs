@@ -16,7 +16,6 @@ use rust_bert::resources::RemoteResource;
 use rust_bert::t5::{T5ConfigResources, T5ModelResources, T5VocabResources};
 
 fn test_summary() -> anyhow::Result<()> {
-    let device = Device::cuda_if_available();
     let config_resource = RemoteResource::from_pretrained(T5ConfigResources::T5_SMALL);
     let vocab_resource = RemoteResource::from_pretrained(T5VocabResources::T5_SMALL);
     let weights_resource = RemoteResource::from_pretrained(T5ModelResources::T5_SMALL);
