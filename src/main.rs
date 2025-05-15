@@ -85,15 +85,18 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let sentence_piece_resource = LocalResource {
         local_path: PathBuf::from(format!("{base_dir}/spiece.model")),
     };
-    let model_resource = Box::new(LocalResource::from(PathBuf::from(
-        format!("{base_dir}/rust_model.ot")),
-    ));
+    // let model_resource = Box::new(LocalResource::from(PathBuf::from(
+    //     format!("{base_dir}/rust_model.ot")),
+    // ));
     let vocab_resource = Box::new(RemoteResource::from_pretrained(
         rust_bert::t5::T5VocabResources::T5_BASE,
     ));
     let config_resource = Box::new(RemoteResource::from_pretrained(
         rust_bert::t5::T5ConfigResources::T5_BASE,
     ));    
+    let model_resource = Box::new(LocalResource::from(PathBuf::from(
+        rust_bert::t5::T5ModelResources::T5_BASE,
+    )));
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
     // let weights_path = weights_resource.get_local_path()?;
