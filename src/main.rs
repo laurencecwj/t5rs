@@ -78,12 +78,26 @@ fn test_t5_generation() -> anyhow::Result<()> {
         
     // Load model
     // let device = Device::cuda_if_available();
-    // let mut vs = nn::VarStore::new(device);
-    // let config = T5Config::from_file(&config_path);
-    // let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
     
-    // // Load weights (assuming you have model weights in the directory)
-    // vs.load(PathBuf::from(format!("{base_dir}/model.ot")))?;
+    let config_resource = LocalResource {
+        local_path: PathBuf::from("path/to/config.json"),
+    };
+    let sentence_piece_resource = LocalResource {
+        local_path: PathBuf::from("path/to/spiece.model"),
+    };
+    let weights_resource = LocalResource {
+        local_path: PathBuf::from("path/to/model.ot"),
+    };
+    // let config_path = config_resource.get_local_path()?;
+    // let spiece_path = sentence_piece_resource.get_local_path()?;
+    // let weights_path = weights_resource.get_local_path()?;
+
+    // let device = Device::cuda_if_available();
+    // let mut vs = nn::VarStore::new(device);
+    // let tokenizer = T5Tokenizer::from_file(spiece_path.to_str().unwrap(), true);
+    // let config = T5Config::from_file(config_path);
+    // let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
+    // vs.load(weights_path)?;
     
     let config = T5Config::from_file(&config_path);
 
@@ -99,7 +113,9 @@ fn test_t5_generation() -> anyhow::Result<()> {
     // Create generator
     let generate_config = TextGenerationConfig {
         model_type: ModelType::T5,
-        config_resource: Box::new(LocalResource::from(PathBuf::from(format!("{base_dir}/config.json")))),
+        config_resource: config_resource,
+        model_resource: weights_resource,
+        vocab_resource: sentence_piece_resource,
         max_length: Some(100),
         do_sample: false,
         num_beams: 5,
@@ -108,7 +124,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         ..Default::default()
     };
     
-    let pipeline = TextGenerationModel::new(generate_config)?;
+    let pipeline = T5Generator::new(generate_config)?;
     
     let ts = std::time::Instant::now();
     // Generate output
