@@ -51,8 +51,10 @@ on K2-18b lasts 33 Earth days. According to The Guardian, astronomers were optim
 telescope — scheduled for launch in 2021 — and the European Space Agency's 2028 ARIEL program, could reveal more \
 about exoplanets like K2-18b."];
 
+    let ts = std::time::Instant::now();
     //    Credits: WikiNews, CC BY 2.5 license (https://en.wikinews.org/wiki/Astronomers_find_water_vapour_in_atmosphere_of_exoplanet_K2-18b)
     let _output = summarization_model.summarize(&input)?;
+    println!("Time: {:?}", ts.elapsed());
     for sentence in _output {
         println!("{sentence}");
     }
@@ -61,8 +63,6 @@ about exoplanets like K2-18b."];
 }
 
 fn main() -> anyhow::Result<()> {
-    let ts = std::time::Instant::now();
     test_summary()?;
-    println!("Time: {:?}", ts.elapsed());
     Ok(())
 }
