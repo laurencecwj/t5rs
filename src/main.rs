@@ -67,56 +67,89 @@ fn test_t5_generation() -> anyhow::Result<()> {
     use tch::{nn, Device};
     use rust_bert::resources::{LocalResource, ResourceProvider};
     use rust_bert::Config;
-    use rust_tokenizers::tokenizer::T5Tokenizer;
-    use rust_bert::t5::{T5Config, T5ForConditionalGeneration};
+    use rust_bert::t5::{T5Config, T5ForConditionalGeneration, T5Generator};  
     use std::path::Path;
+    use rust_bert::pipelines::text_generation::{TextGenerationConfig, TextGenerationModel};
+    use std::path::PathBuf;
+    use rust_bert::pipelines::common::ModelType;
 
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
         
     // Load model
-    let mut vs = nn::VarStore::new(device);
-    let config = T5Config::from_file(&config_path);
-    let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
+    // let device = Device::cuda_if_available();
+    // let mut vs = nn::VarStore::new(device);
+    // let config = T5Config::from_file(&config_path);
+    // let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
     
-    // Load weights (assuming you have model weights in the directory)
-    vs.load(PathBuf::from(format!("{base_dir}/model.ot")))?;
+    // // Load weights (assuming you have model weights in the directory)
+    // vs.load(PathBuf::from(format!("{base_dir}/model.ot")))?;
     
-    // Input text
-    let input_text = "translate English to German: The house is wonderful.";
-    
-    // Tokenize input
     let tokenizer = rust_bert::pipelines::common::TokenizerOption::from_file(
-        PathBuf::from(format!("{base_dir}/tokenizer.json")),
-        PathBuf::from(format!("{base_dir}/tokenizer_config.json")),
+        ModelType::T5,
+        PathBuf::from(format!("{base_dir}/tokenizer.json")).to_str().unwrap(),
         None,
         false,
         None,
         None,
     )?;
+
+    // Input text
+    let input_text = "translate English to German: The house is wonderful.";
+
     
-    let input = tokenizer.encode(input_text, true);
+    // Create generator
+    let generate_config = TextGenerationConfig {
+        model_type: ModelType::T5,
+        config_resource: Box::new(LocalResource::from(PathBuf::from(format!("{base_dir}/config.json")))),
+        max_length: Some(100),
+        do_sample: false,
+        num_beams: 5,
+        temperature: 0.1,
+        num_return_sequences: 1,
+        ..Default::default()
+    };
+    
+    let pipeline = TextGenerationModel::new_with_tokenizer(generate_config, tokenizer)?;
     
     let ts = std::time::Instant::now();
     // Generate output
-    let output = t5_model.generate(
-        &[input],
-        Some(GenerateOptions {
-            max_length: Some(50),
-            ..Default::default()
-        }),
-    )?;
+    let output = pipeline.generate(&[input_text.to_string()], None)?;
     println!("generate time: {:?}", ts.elapsed());
+    println!("Translation: {}", output[0]); 
     
-    // Decode output
-    let translation = tokenizer.decode(&output[0], true, true)?;
+    // // Tokenize input
+    // let tokenizer = rust_bert::pipelines::common::TokenizerOption::from_file(
+    //     PathBuf::from(format!("{base_dir}/tokenizer.json")),
+    //     PathBuf::from(format!("{base_dir}/tokenizer_config.json")),
+    //     None,
+    //     false,
+    //     None,
+    //     None,
+    // )?;
     
-    println!("Translation: {}", translation);
+    // let input = tokenizer.encode(input_text, true);
+    
+    // let ts = std::time::Instant::now();
+    // // Generate output
+    // let output = t5_model.generate(
+    //     &[input],
+    //     Some(GenerateOptions {
+    //         max_length: Some(50),
+    //         ..Default::default()
+    //     }),
+    // )?;
+    // println!("generate time: {:?}", ts.elapsed());
+    
+    // // Decode output
+    // let translation = tokenizer.decode(&output[0], true, true)?;
+    
+    // println!("Translation: {}", translation);
     Ok(())
 }
 
 
 fn main() -> anyhow::Result<()> {
-    test_summary()?;
+    test_t5_generation()?;
     Ok(())
 }
