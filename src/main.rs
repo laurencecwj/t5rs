@@ -80,13 +80,13 @@ fn test_t5_generation() -> anyhow::Result<()> {
     // let device = Device::cuda_if_available();
     
     let config_resource = LocalResource {
-        local_path: PathBuf::from("path/to/config.json"),
+        local_path: PathBuf::from(format!("{base_dir}/config.json")),
     };
     let sentence_piece_resource = LocalResource {
-        local_path: PathBuf::from("path/to/spiece.model"),
+        local_path: PathBuf::from(format!("{base_dir}/spiece.model")),
     };
     let weights_resource = LocalResource {
-        local_path: PathBuf::from("path/to/model.ot"),
+        local_path: PathBuf::from(format!("{base_dir}/model.ot")),
     };
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
