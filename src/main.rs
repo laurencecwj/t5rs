@@ -85,9 +85,9 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let sentence_piece_resource = LocalResource {
         local_path: PathBuf::from(format!("{base_dir}/spiece.model")),
     };
-    let weights_resource = LocalResource {
-        local_path: PathBuf::from(format!("{base_dir}/rust_model.ot")),
-    };
+    let model_resource = Box::new(LocalResource::from(PathBuf::from(
+        format!("{base_dir}/rust_model.ot")),
+    ));
     // let config_path = config_resource.get_local_path()?;
     // let spiece_path = sentence_piece_resource.get_local_path()?;
     // let weights_path = weights_resource.get_local_path()?;
@@ -98,7 +98,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     // let config = T5Config::from_file(config_path);
     // let t5_model = T5ForConditionalGeneration::new(&vs.root(), &config);
     // vs.load(weights_path)?;
-    
+
     let config = T5Config::from_file(&config_path);
 
     // let tokenizer = TokenizerOption::from_hf_tokenizer_file(
@@ -114,7 +114,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let generate_config = TextGenerationConfig {
         model_type: ModelType::T5,
         config_resource: Box::new(config_resource),
-        model_resource: rust_bert::pipelines::common::ModelResource::Torch(Box::new(weights_resource)),
+        model_resource: ModelResource::Torch(model_resource),
         vocab_resource: Box::new(sentence_piece_resource),
         max_length: Some(100),
         do_sample: false,
