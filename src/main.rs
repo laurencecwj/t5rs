@@ -114,7 +114,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let generate_config = TextGenerationConfig {
         model_type: ModelType::T5,
         config_resource: Box::new(config_resource),
-        model_resource: Box::new(weights_resource),
+        model_resource: rust_bert::pipelines::common::ModelResource::Torch(Box::new(weights_resource)),
         vocab_resource: Box::new(sentence_piece_resource),
         max_length: Some(100),
         do_sample: false,
