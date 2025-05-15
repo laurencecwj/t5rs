@@ -72,31 +72,23 @@ fn test_t5_generation() -> anyhow::Result<()> {
     use std::path::Path;
 
     let base_dir = "./t5-base";
-
-    let config_path = Path::new(format!("{base_dir}/config.json").as_str());
-    let device = Device::cuda_if_available();
+    let config_path = PathBuf::from(format!("{base_dir}/config.json"));
+    let device = Device::Cpu;
     let p = nn::VarStore::new(device);
-    let config = T5Config::from_file(config_path);
-    let t5 = T5ForConditionalGeneration::new(&base_dir, &config);
-
-    let mut tokenizer = T5Tokenizer::from_pretrained(
-        LocalResource::from(Path::new(format!("{base_dir}/tokenizer.json").as_str())),
-        LocalResource::from(Path::new(format!("{base_dir}/tokenizer_config.json").as_str())),
-        false,
-    )?;
-
+    let config = T5Config::from_file(&config_path);
+    let t5 = T5ForConditionalGeneration::new(&p.root() / "t5", &config);
+    // Create translation model with proper resource paths
     let model = TranslationModelBuilder::new()
         .with_device(device)
         .with_model_type(ModelType::T5)
         .with_model(t5)
+        .with_tokenizer(PathBuf::from(format!("{base_dir}/tokenizer.json")))
+        .with_tokenizer_config(PathBuf::from(format!("{base_dir}/tokenizer_config.json")))
         .create_model()?;
     // Perform translation
     let input_text = "translate English to German: The house is wonderful.";
-    let ts = std::time::Instant::now();
     let output = model.translate(&[input_text], Language::English, Language::German)?;
-    println!("generation time: {:?}", ts.elapsed());
     println!("Translation: {}", output[0]);
-
     Ok(())
 }
 
