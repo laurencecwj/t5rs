@@ -3,9 +3,6 @@ name = "t5rs"
 version = "0.1.0"
 edition = "2024"
 
-[env]
-CXXFLAGS = "-D_GLIBCXX_USE_CXX11_ABI=1"
-
 [dependencies]
 anyhow = "1.0.98"
 rust-bert = "0.23.0"
