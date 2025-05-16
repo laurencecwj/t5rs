@@ -73,7 +73,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     use std::path::PathBuf;
     use rust_bert::pipelines::common::{ModelType, TokenizerOption};
 
-    let base_dir = "./t5-base";
+    let base_dir = "/workspace/t5rs/t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
     let model_path = PathBuf::from(format!("{base_dir}/rust_model.ot"));
         
