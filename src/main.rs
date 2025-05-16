@@ -76,11 +76,15 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
     let model_path = PathBuf::from(format!("{base_dir}/rust_model.ot"));
+    let vocab_path = PathBuf::from(format!("{base_dir}/spiece.model"));
         
     let config_base: (&str, &str) = ("t5-base/config", config_path.to_str().clone().unwrap());
 
     // rust_bert::t5::T5ModelResources::T5_BASE,
     let model_base: (&str, &str) = ("t5-base/model", model_path.to_str().clone().unwrap());
+
+    // rust_bert::t5::T5VocabResources::T5_BASE
+    let vocab_base: (&str, &str) = ("t5-base/spiece", vocab_path.to_str().clone().unwrap());
 
     // Load model
     // let device = Device::cuda_if_available();
@@ -95,7 +99,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     //     format!("{base_dir}/rust_model.ot")),
     // ));
     let vocab_resource = Box::new(RemoteResource::from_pretrained(
-        rust_bert::t5::T5VocabResources::T5_BASE,
+        vocab_base,
     ));
     let config_resource = Box::new(RemoteResource::from_pretrained(
         config_base,
