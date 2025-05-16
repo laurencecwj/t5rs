@@ -76,7 +76,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
         
-    let _T5_BASE: (str, str) = ("t5-base/config", config_path.to_str().clone().unwrap());
+    let _T5_BASE: (&str, &str) = ("t5-base/config", config_path.to_str().clone().unwrap());
     // Load model
     // let device = Device::cuda_if_available();
     
