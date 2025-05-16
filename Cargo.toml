@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 rust-bert = { version = "0.23.0", features = ["hf-tokenizers"] }
+rust_tokenizers = "8.1.1"
 tch = "0.17.0"
