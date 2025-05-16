@@ -73,11 +73,13 @@ fn test_t5_generation() -> anyhow::Result<()> {
     use std::path::PathBuf;
     use rust_bert::pipelines::common::{ModelType, TokenizerOption};
 
-    let base_dir = "/workspace/t5rs/t5-base";
+    let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
     let model_path = PathBuf::from(format!("{base_dir}/rust_model.ot"));
         
     let config_base: (&str, &str) = ("t5-base/config", config_path.to_str().clone().unwrap());
+
+    // rust_bert::t5::T5ModelResources::T5_BASE,
     let model_base: (&str, &str) = ("t5-base/model", model_path.to_str().clone().unwrap());
 
     // Load model
@@ -96,7 +98,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         rust_bert::t5::T5VocabResources::T5_BASE,
     ));
     let config_resource = Box::new(RemoteResource::from_pretrained(
-        config_base,
+        _T5_BASE,
     ));    
     let model_resource = Box::new(RemoteResource::from_pretrained(
         model_base,
