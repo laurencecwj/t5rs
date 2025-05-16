@@ -98,7 +98,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         rust_bert::t5::T5VocabResources::T5_BASE,
     ));
     let config_resource = Box::new(RemoteResource::from_pretrained(
-        _T5_BASE,
+        config_base,
     ));    
     let model_resource = Box::new(RemoteResource::from_pretrained(
         model_base,
