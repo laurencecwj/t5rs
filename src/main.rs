@@ -215,6 +215,13 @@ fn test_t5_v2() -> anyhow::Result<()> {
 }
 
 fn test_t5_v3() -> anyhow::Result<()> {
+    use tch::{nn, Device};
+    use rust_bert::resources::{LocalResource, ResourceProvider};
+    use rust_bert::t5::{T5Config, T5ForConditionalGeneration};
+    use rust_bert::Config;
+    use rust_tokenizers::tokenizer::T5Tokenizer;
+    use std::path::PathBuf;
+
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
     let model_path = PathBuf::from(format!("{base_dir}/rust_model.ot"));
