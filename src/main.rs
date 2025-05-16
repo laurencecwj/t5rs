@@ -214,7 +214,31 @@ fn test_t5_v2() -> anyhow::Result<()> {
     Ok(())
 }
 
+fn test_t5_v3() -> anyhow::Result<()> {
+    let base_dir = "./t5-base";
+    let config_path = PathBuf::from(format!("{base_dir}/config.json"));
+    let model_path = PathBuf::from(format!("{base_dir}/rust_model.ot"));
+    let vocab_path = PathBuf::from(format!("{base_dir}/spiece.model"));
+        
+    let config_base: (&str, &str) = ("t5-base/config", config_path.to_str().clone().unwrap());
+    let model_base: (&str, &str) = ("t5-base/model", model_path.to_str().clone().unwrap());
+    let vocab_base: (&str, &str) = ("t5-base/spiece", vocab_path.to_str().clone().unwrap());
+
+    let vocab_resource = Box::new(RemoteResource::from_pretrained(
+        vocab_base,
+    ));
+    let config_resource = Box::new(RemoteResource::from_pretrained(
+        config_base,
+    ));    
+    let model_resource = Box::new(RemoteResource::from_pretrained(
+        model_base,
+    ));
+
+    Ok(())
+}
+
 fn main() -> anyhow::Result<()> {
     test_t5_v2()?;
+    test_t5_generation()?;
     Ok(())
 }
