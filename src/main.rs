@@ -76,6 +76,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
     let base_dir = "./t5-base";
     let config_path = PathBuf::from(format!("{base_dir}/config.json"));
         
+    pub const _T5_BASE: (&'static str, &'static str) = ("t5-base/config", config_path);
     // Load model
     // let device = Device::cuda_if_available();
     
@@ -92,7 +93,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         rust_bert::t5::T5VocabResources::T5_BASE,
     ));
     let config_resource = Box::new(RemoteResource::from_pretrained(
-        rust_bert::t5::T5ConfigResources::T5_BASE,
+        _T5_BASE,
     ));    
     let model_resource = Box::new(RemoteResource::from_pretrained(
         rust_bert::t5::T5ModelResources::T5_BASE,
