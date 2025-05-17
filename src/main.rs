@@ -143,6 +143,7 @@ fn test_t5_generation() -> anyhow::Result<()> {
         ..Default::default()
     };
     
+    println!("{:?}", generate_config);
     let pipeline = TextGenerationModel::new(generate_config)?;
     
     let ts = std::time::Instant::now();
