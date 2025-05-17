@@ -246,6 +246,8 @@ fn test_t5_v3() -> anyhow::Result<()> {
 }
 
 fn main() -> anyhow::Result<()> {
+    let cuda_ok = tch::Cuda::is_available();
+    println!("cuda device: {:?}", cuda_ok);
     test_t5_v2()?;
     test_t5_generation()?;
     Ok(())
